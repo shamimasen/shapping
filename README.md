@@ -124,8 +124,9 @@
 3. Menjawab pertanyaan yang disediakan
 
 
-## **Bagan Request Client**
-
+## **Bagan Request Client ke web aplikasi berbasis Django**
+![Bagan](images/bagan.jpg)
+Pada aplikasi berbasis Django, alur dimulai ketika client mengirimkan request HTTP ke server. Request ini diterima oleh urls.py, yang bertugas memetakan URL ke fungsi tertentu di views.py. Di views.py, logika aplikasi diproses, dan jika diperlukan data dari database, views.py akan berinteraksi dengan models.py untuk mengambil atau memanipulasi data. Setelah data diperoleh, views.py mengirimkan data tersebut ke template (berkas HTML) yang akan di-render menjadi halaman web. views.py kemudian akan mengambil data yang diperlukan models.py lalu menampilkannya menggunakan template.
 
 
 
