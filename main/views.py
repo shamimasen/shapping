@@ -2,9 +2,10 @@ from django.shortcuts import render
 
 def show_main(request):
     context = {
-        'npm' : '2306123456',
-        'name': 'Pak Bepe',
-        'class': 'PBP E'
+        'name' : 'Liquid Blush',
+        'price': 'Rp350.000,00',
+        'description': 'Meet our new Liquid Blush with high quiality ingredients that will blow your mind!',
+        'rating' : '4.7/5.0',
     }
 
     return render(request, "main.html", context)
