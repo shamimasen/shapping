@@ -28,7 +28,7 @@
 * ### Membuat routing pada proyek agar dapat menjalankan aplikasi main:
 1. Membuat berkas urls.py di dalam direktori main yang telah saya buat tadi
 2. Mengisi urls.py dengan kode berikut :
-    '''
+
     from django.urls import path
     from main.views import show_main
 
@@ -37,9 +37,9 @@
     urlpatterns = [
         path('', show_main, name='show_main'),
     ]
-    '''
+
 3. Membuka berkas urls.py yang ada di dalam direktori proyek shapping lalu menambahkan fungsi include dan rute Url di dalam variabel urlpatterns seperti berikut :
-    '''
+
     from django.contrib import admin
     from django.urls import path, include
 
@@ -47,12 +47,12 @@
         path('admin/', admin.site.urls),
         path('', include('main.urls')),
     ]
-    '''
+
 4. Menjalankan proyek Django dengan perintah 'python manage.py runserver'.
 
 * ### Membuat model pada aplikasi main dengan nama Product yang memiliki atribut wajib name, price, dan description :
-1. Membuka berkas models.py yang sudah ada pada direktori aplikasi main kemudian diisi dengan kode berikut :
-    '''
+1. Membuka berkas models.py yang sudah ada pada direktori aplikasi main kemudian diisi dengan kode berikut:
+    
     from django.db import models
 
     class MoodEntry(models.Model):
@@ -64,12 +64,12 @@
         @property
         def is_mood_strong(self):
             return self.mood_intensity > 5
-    '''
+
 2. Menjalankan perintah 'python manage.py makemigrations' untuk membuat migrasi model dan perintah 'python manage.py migrate' untuk menerapkan migrasi ke dalam basis data lokal.
 
 * ### Membuat sebuah fungsi pada views.py :
 1. Membuka berkasi views.py yang terletak di dalam berkas aplikasi main kemudia menambahkan fungsi show_main di bawah impor yang sudah ada seperti berikut :
-    '''
+
     def show_main(request):
     context = {
         'name' : 'Liquid Blush',
@@ -79,11 +79,11 @@
     }
 
     return render(request, "main.html", context)
-    '''
+
 * ### Membuat sebuah routing pada urls.py aplikasi main untuk memetakan fungsi yang telah dibuat pada views.py :
 1. Membuat berkas urls.py di dalam direktori main yang telah saya buat tadi
 2. Mengisi urls.py dengan kode berikut :
-    '''
+
     from django.urls import path
     from main.views import show_main
 
@@ -92,9 +92,9 @@
     urlpatterns = [
         path('', show_main, name='show_main'),
     ]
-    '''
+
 3. Membuka berkas urls.py yang ada di dalam direktori proyek shapping lalu menambahkan fungsi include dan rute Url di dalam variabel urlpatterns seperti berikut :
-    '''
+
     from django.contrib import admin
     from django.urls import path, include
 
@@ -102,16 +102,16 @@
         path('admin/', admin.site.urls),
         path('', include('main.urls')),
     ]
-    '''
+
 4. Menjalankan proyek Django dengan perintah 'python manage.py runserver'.
 
 * ### Melakukan deployment ke PWS terhadap aplikasi yang sudah dibuat :
 1. Mengakses halaman pws (https://pbp.cs.ui.ac.id) kemudian login dengan data diri saya
 2. DI home page PWS, saya membuat proyek baru dengan 'Create New Project' lalu membuat project name sebagai shapping.
 3. Kembali ke VS Code, pada berkas settings.py di dalam direktori proyek shapping saya mengubah ALLOWED_HOSTS menjadi:
-    '''
+
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "shalya-naura-shapping.pbp.cs.ui.ac.id"]
-    '''
+
 4. Melakukan perintah git add, commit, dan push untuk menyimpan perubahan ke repositori GitHub yang telah saya buat sebelumnya.
 5. Menjalankan perintah yang ada di informasi Project Command setelah saya membuat project baru di PWS di dalam terminal direktori utama shapping saya.
 6. Saat melakukan perintah push ke dalam PWS saya, saya memasukkan username dan password yang saya terima saat saya membuat project di PWS.
