@@ -156,3 +156,23 @@ Django memungkinkan pemula memahami konsep dasar pengembangan web dengan cepat d
 Model pada Django disebut sebagai ORM (Object-Relational Mapping) karena model ini menghubungkan antara objek Python dan tabel dalam database. Dengan ORM, pengembang dapat berinteraksi dengan database menggunakan objek Python alih-alih menulis query SQL langsung.
 
 ORM secara otomatis menerjemahkan operasi seperti Create, Read, Update, Delete (CRUD) ke dalam perintah SQL yang dieksekusi di database, sehingga pengembang hanya perlu bekerja dengan objek Python untuk mengelola data. Ini membuat pengelolaan database lebih sederhana dan lebih aman.
+
+
+
+## **Mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?**
+Data delivery diperlukan dalam pengimplementasian sebuha platform karena platform modern sering kali mengandalkan transfer data yang efisien, aman, dan tepat waktu untuk menyediakan layanan kepada pengguna. Beberapa alasan mengapa data delivery sengatlah penting :
+1. Ketersediaan dan Kecepatan Akses Informasi : Data delivery memastikan pengguna dapat mengakses informasi yang mereka butuhkan dengan cepat dan tepat.
+2. Sinkronisasi Data antar Komponen : Data delivery membantu menyinkronkan data di antara komponen-komponen tersebut sehingga sistem bekerja secara konsisten dan terkoordinasi.
+3. User Experience yang Lebih Baik : Pengiriman data yang cepat dan handal memastikan pengguna tidak mengalami lag atau kesalahan saat mengakses platform.
+
+Masih ada banyak lagi alasan mengapa memerlukan data delivery dalam pengimplementasian sebuah platform seperti real-time data processing, keamanan dan privasi data, Optimasi kinerja sistem, dan lain sebagainya. Maka dari itu, data delivery menjadi hal yang sangat penting dalam pengoperasian platform modern. Dengan pengiriman data yang tepat dan efisien, platform dapat memberikan layanan yang lebih cepat, lebih aman, dan lebih dapat diandalkan, yang pada akhirnya menignkatkan pengalaman pengguna dan efisiensi operasional.
+
+
+
+## **Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?**
+Menurut saya, JSON lebih baik jika dibandingkan dengan XML. Secara umum, JSON memang lebih disukai dan populer dibandingkan XML, terutama dalam pengembangan aplikasi web modern. Ada beberapa alasan yang dapat mendukung pernyataan saya mengenai popularitas JSON dibandingkan dengan XML :
+1. Format yang Lebih Ringkas dan Mudah Dibaca : JSON memiliki format yang lebih sederhana, ringkas, dan mudah dibaca karena JSON menggunakan tanda kurung kurawal "{}" untuk objek dan tanda kurung siku "[]" untuk array. XML, di sisi lain, menggunakan tag pembuka dan penutup "(<tag>...</tag>)", yang cenderung membuat file panjang dan sulit dibaca.
+2. Kinerja yang Lebih Baik : Karena JSON lebih ringan dan ringkas dibandingkan XML, pengiriman data JSON melalui jaringan memerlukan lebih sedikit bandwith dan labih cepat.
+3. Lebih Mudah Diprodes oleh Banyak Bahasa Pemrograman : JSON lebih mudah diproses oleh banyak bahasa pemrograman modern, seperti Python, Ruby, JavaScript, dan PHP memiliki dukungan asli untuk bekerja dengan JSON.
+
+Berdasarkan alasan-alasan tersebut, menurut saya, JSON lebih baik dalam hal kinerja, kemudahan integrasi, dan kesederhanaan, sehingga lebih cocok untuk aplikasi web dan mobile modern. Meskipun terkadang XML masih perlu digunakan untuk hal-hal tertentu, JSON tetap lebih populer dan nyaman digunakan karena kesederhanaan, efisiensi, dan kemampuannya untuk bekerja lebih baik dengan bahasa pemrograman modern dan arsitektur web.

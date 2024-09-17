@@ -1,12 +1,12 @@
+import uuid
 from django.db import models
 
 class MoodEntry(models.Model):
-    nama = models.CharField(max_length=200)
-    kelas = models.IntegerField()
-    mood = models.CharField(max_length=255)
-    time = models.DateField(auto_now_add=True)
-    feelings = models.TextField()
-    mood_intensity = models.IntegerField()
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    product_name = models.CharField(max_length=255)
+    price = models.IntegerField()
+    description = models.TextField()
+    rating = models.IntegerField()
 
     @property
     def is_mood_strong(self):

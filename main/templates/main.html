@@ -1,14 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
 <h1>Welcome to Shapping!</h1>
 
 <h5>Nama : </h5>
 <p>{{nama}}</p>
 <h5>Kelas : </h5>
 <p>{{kelas}}</p>
-<h5>Name : </h5>
+<!-- <h5>Name : </h5>
 <p>{{name}}</p>
 <h5>Price : </h5>
 <p>{{price}}</p>
 <h5>Description : </h5>
 <p>{{description}}</p> 
 <h5>Rating : </h5>
-<p>{{rating}}</p> 
+<p>{{rating}}</p>  -->
+
+{% if not mood_entries %}
+<p>Belum ada data untuk produk yang dijual</p>
+{% else %}
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Price</th>
+    <th>Description</th>
+    <th>Rating</th>
+  </tr>
+
+  {% comment %} Berikut cara memperlihatkan data produk di bawah baris ini 
+  {% endcomment %} 
+  {% for mood_entry in mood_entries %}
+  <tr>
+    <td>{{mood_entry.product_name}}</td>
+    <td>{{mood_entry.price}}</td>
+    <td>{{mood_entry.description}}</td>
+    <td>{{mood_entry.rating}}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% endif %}
+
+<br />
+
+<a href="{% url 'main:create_mood_entry' %}">
+  <button>Add New Product</button>
+</a>
+{% endblock content %}
