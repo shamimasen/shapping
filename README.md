@@ -359,9 +359,9 @@ path('xml/', show_xml, name='show_xml'),
     path('json/<str:id>/', show_json_by_id, name='show_json_by_id'),
 
 3. Menjalankan proyek Django dengan perintah "python manage.py runserver" dan membuka 4 link, yaitu :
-http://localhost:8000/xml/
-http://localhost:8000/json/
-http://localhost:8000/xml/[id]/
+http://localhost:8000/xml/  
+http://localhost:8000/json/  
+http://localhost:8000/xml/[id]/  
 http://localhost:8000/json/[id]/  
 
 
