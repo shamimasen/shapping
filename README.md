@@ -364,6 +364,7 @@ http://localhost:8000/xml/[id]/
 http://localhost:8000/json/[id]/  
 
 
+
 * ### Menjawab beberapa pertanyaan berikut pada README.md pada root folder.
 1. Menjelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform.
 2. Menjelaskan menurut saya yang lebih baik antara XML dan JSON beserta alasan mengapa JSON lebih populer dibandingkan XML.
