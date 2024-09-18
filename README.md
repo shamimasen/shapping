@@ -352,7 +352,6 @@ from main.views import show_main, create_mood_entry, show_xml, show_json, show_x
 
 2. Menambahkan path url ke dalam urlpatterns untuk mengakses fungsi yang telah di import :
 
-...
 path('xml/', show_xml, name='show_xml'),
     path('json/', show_json, name='show_json'),
     path('xml/<str:id>/', show_xml_by_id, name='show_xml_by_id'),
@@ -371,7 +370,7 @@ http://localhost:8000/json/[id]/
 3. Menjelaskan fungsi dari method "is_valis()" pada form di Django dan mengapa kita membutuhkannya.
 4. Menjelaskan mengapa kita membutuhkan "csrf_token" saat membuat form di Django,  apa yang dapat terjadi jika tidak menambahkannya, serta bagaimana hal tersebut dapat dimanfaatkan oleh penyerang.
 5. Menjelaskan bagaimana saya mengimplementasikan checklist dari Tugas 3 secara step-by-step di dalam README.md
-6. Mengakses keempat URL di poin 2 menggunakan Postman, kemudian screenshot hasil akses, lalu mengunggah foto ke dalam README.md
+6. Mengakses keempat URL di poin 2 menggunakan Postman, kemudian screenshot hasil akses, lalu mengunggah foto ke dalam berkas README.md
 7. Melakukan add-commit-push ke GitHub.  
 
 
