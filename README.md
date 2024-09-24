@@ -427,9 +427,9 @@ http://localhost:8000/json/[id]/
 ![XML](images/xmlbyid.jpg)
 ![XML](images/jsonbyid.jpg)  
 
-</summary>
+</details>
 
-
+<details>
 <summary> <b> Tugas 4 : Implementasi Autentikasi, Session, dan Cookies pada Django <b> </summary>  
 
 
