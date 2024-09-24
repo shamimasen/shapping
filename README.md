@@ -4,6 +4,7 @@
 >**Shapping :** http://shalya-naura-shapping.pbp.cs.ui.ac.id/
 
 ## **Penjelasan Tugas**
+<details>
 <summary> <b> Tugas 2 : Implementasi Model-View-Template (MVT) pada Django <b> </summary>  
 
 
@@ -182,8 +183,9 @@ Model pada Django disebut sebagai ORM (Object-Relational Mapping) karena model i
 
 ORM secara otomatis menerjemahkan operasi seperti Create, Read, Update, Delete (CRUD) ke dalam perintah SQL yang dieksekusi di database, sehingga pengembang hanya perlu bekerja dengan objek Python untuk mengelola data. Ini membuat pengelolaan database lebih sederhana dan lebih aman.  
 
-</summary>
+</details>
 
+<details>
 <summary> <b> Tugas 3 : Implementasi Form dan Data Delivery pada Django <b> </summary>
 
 ## **Mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?**
@@ -653,4 +655,4 @@ def logout_user(request):
 ## ** Menjawab pertanyaan README
 Setelah semua fitur di atas diimplementasikan, perbarui file README.md untuk menjelaskan langkah-langkah implementasi tersebut dan jawaban dari beberapa pertanyaan yang diberikan.
 
-</summary>
+</details>
