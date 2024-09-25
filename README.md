@@ -593,9 +593,6 @@ urlpatterns = [
   <button>Logout</button>
 </a>
 ```  
-  
-
-* ### Membuat dua akun pengguna dengan tiga dummy data
 
 
 
