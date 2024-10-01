@@ -19,16 +19,15 @@ from django.http import HttpResponseRedirect
 def show_main(request):
     mood_entries = MoodEntry.objects.filter(user=request.user)
 
+    # Ambil last_login dari cookies
+    last_login = request.COOKIES.get('last_login', 'Not available')
+
     context = {
         'name': request.user.username,
-        'kelas' : 'PBP B',
-        'npm' : '2306245535',
-        # 'name' : 'Liquid Blush',
-        # 'price': 'Rp350.000,00',
-        # 'description': 'Meet our new Liquid Blush with high quiality ingredients that will blow your mind!',
-        # 'rating' : '4.7/5.0',
+        'kelas': 'PBP B',
+        'npm': '2306245535',
         'mood_entries': mood_entries,
-        'last_login': request.COOKIES['last_login'],
+        'last_login': last_login,  # Mengambil dari cookie
     }
 
     return render(request, "main.html", context)
