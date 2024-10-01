@@ -653,3 +653,564 @@ def logout_user(request):
 Setelah semua fitur di atas diimplementasikan, perbarui file README.md untuk menjelaskan langkah-langkah implementasi tersebut dan jawaban dari beberapa pertanyaan yang diberikan.
 
 </details>
+
+<details>
+<summary> <b> Tugas 5 : Desain Web menggunakan HTML, CSS dan Framework CSS <b> </summary>
+
+
+## ** Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!  
+1. Inline Style : Style yang diterapkan langsung pada elemen HTML menggunakan atribut style. **Prioritas : Paling tinggi**
+2. ID Selector : Menggunakan tanda # untuk mendefinisikan style yang diterapkan pada elemen dengan ID tertentu. **Prioritas : Lebih tinggi daripada class dan tag selectors, tetapi lebih rendah dari inline styles.**
+3. Class Selector, Attribute Selector, dan Pseudo-Class : Class Selector menggunakan tanda . diikuti oleh nama class. Attribute Selector memungkinkan penargetan elemen berdasarkan atribut tertentu. Pseudo-Class menerapkan style pada elemen berdasarkan kondisi tertentu (misal: hover). **Prioritas :  Lebih tinggi daripada tag selectors, tetapi lebih rendah daripada ID selectors.**
+4. Element Selector (Tag Selector) : Style yang diterapkan berdasarkan nama elemen HTML. **Prioritas : Lebih rendah daripada ID dan class selectors.**
+5. Universal Selector : Menggunakan tanda * untuk menerapkan style ke semua elemen di dalam dokumen. **Prioritas : Paling rendah setelah element selectors**
+6. External dan Internal Style Sheets : External Stylesheet adalah file CSS terpisah yang di-link ke halaman HTML menggunakan tag 'link'. Internal Stylesheet adalah style yang didefinisikan di dalam tag 'style' di dalam elemen 'head' pada halaman 'HTML'. **Prioritas : Paling rendah setelah 'element' selectors**
+7. Browser Default Styles : Style yang diterapkan secara otomatis oleh browser jika tidak ada style yang ditentukan. Setiap browser memiliki default yang berbeda. **Prioritas : Terendah, diterapkan hanya jika tidak ada style lain yang berlaku**  
+Urutan prioritas CSS sangat penting dalam menentukan gaya yang diterapkan pada elemen HTML. Inline styles memiliki prioritas tertinggi, diikuti oleh external dan internal style sheets, dan akhirnya browser default styles. Memahami urutan ini membantu dalam pengaturan dan pengelolaan CSS secara efektif.  
+
+    
+
+
+## ** Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design!  
+Responsive design memastikan website dapat diakses dan berfungsi baik di berbagai ukuran layar dan perangkat. Hal ini penting karena pengguna mengakses web melalui perangkat yang berbeda, mulai dari ponsel hingga desktop. Contoh aplikasi yang menerapkan responsive design adalah Google, yang tampil optimal di perangkat apa pun. Sebaliknya, situs web lama sering kali hanya dirancang untuk layar desktop, sehingga tampak tidak proporsional saat diakses di perangkat mobile.  
+  
+
+
+## ** Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!  
+1. **Margin** : Jarak di luar elemen, memisahkan elemen dari elemen lainnya.
+2. **Border** : Garis di sekitar elemen, memisahkan elemen dari margin dan padding.
+3. **Padding** : Ruang di dalam elemen antara konten dan border.  
+
+**Cara Implementasi :**
+```
+div {
+  margin: 20px;
+  border: 2px solid black;
+  padding: 15px;
+}
+```  
+  
+
+
+## ** Jelaskan konsep flex box dan grid layout beserta kegunaannya!  
+1. **Flexbox** adalah layout satu dimensi yang digunakan untuk mengatur elemen dalam satu baris atau kolom. Berguna untuk mengatur alignment dan distribusi ruang antar elemen dalam container.
+2. **Grid Layout** adalah layout dua dimensi yang memungkinkan kita untuk mengatur elemen dalam baris dan kolom. Ini sangat efektif untuk layout yang lebih kompleks.  
+  
+
+
+## ** Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)! 
+
+* ### Implementasikan fungsi untuk menghapus dan mengedit product.
+1. Membuat 2 fungsi baru di dalam berkas 'views.py', yaitu edit_produt dan delete_product seperti berikut.
+**edit_product :**
+```
+def edit_product(request, id):
+    # Get mood entry berdasarkan id
+    mood = MoodEntry.objects.get(pk = id)
+
+    # Set mood entry sebagai instance dari form
+    form = MoodEntryForm(request.POST or None, instance=mood)
+
+    if form.is_valid() and request.method == "POST":
+        # Simpan form dan kembali ke halaman awal
+        form.save()
+        return HttpResponseRedirect(reverse('main:show_main'))
+
+    context = {'form': form}
+    return render(request, "edit_product.html", context)
+```  
+
+**delete_product :**
+```
+def delete_product(request, id):
+    # Get mood berdasarkan id
+    product = MoodEntry.objects.get(pk = id)
+    # Hapus mood
+    product.delete()
+    # Kembali ke halaman awal
+    return HttpResponseRedirect(reverse('main:show_main'))
+```  
+2. Membuat berkas baru di dalam folder 'templates' yang berada dalam direktori 'main' untuk mengimplementasikan template halaman edit_product sesuai design yang telah saya buat :  
+
+**edit_product.html :**
+```
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Edit Product</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col min-h-screen bg-gray-100">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black">Edit Product</h1>
+  
+    <div class="shadow-md rounded-lg p-6 form-style" style="background-color: #fff5c2;">
+      <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="flex flex-col">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">
+              {{ field.label }}
+            </label>
+            <div class="w-full">
+              {{ field }}
+            </div>
+            {% if field.help_text %}
+              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="flex justify-center mt-6">
+          <button type="submit" style="background-color: #e14f3a; color: white;" 
+                  class="font-semibold px-6 py-3 rounded-lg hover:bg-[#d6393a] transition duration-300 ease-in-out w-full"> 
+              Edit Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+```  
+3. Menambahkan import fungsi edit_product dan delete_product ke dalam berkas 'urls.py' :
+```
+from main.views import edit_product
+from main.views import delete_product
+```  
+4. Menambahkan path ke dalam 'urlpatterns' untuk mengakses fungsi yang telah diimport :
+```
+urlpatterns = [
+    ...
+    path('edit-product/<uuid:id>', edit_product, name='edit_product'),
+    path('delete/<uuid:id>', delete_product, name='delete_product'), 
+]
+```  
+  
+
+* ### Kustomisasi desain pada template HTML yang telah dibuat pada tugas-tugas sebelumnya (menggunakan Tailwind) dengan ketentuan yang telah diberikan
+1. Kustomisasi halaman login, register, dan tambah product :  
+
+**LOGIN :**
+```
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Sign in</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center w-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8">
+    <div class="text-center">
+      <img src="https://media-public.canva.com/UFYNA/MAGMDXUFYNA/1/tl.png" alt="Company Logo" class="mx-auto h-20 w-auto">
+      <h2 class="mt-6 text-black text-3xl font-extrabold text-gray-900">
+        Sign in to your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6" method="POST" action="">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm -space-y-px">
+        <div>
+          <label for="username" class="sr-only">Username</label>
+          <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#e14f3a] focus:border-[#e14f3a] focus:z-10 sm:text-sm" placeholder="Username" style="border-color: #e14f3a;">
+        </div>
+        <div>
+          <label for="password" class="sr-only">Password</label>
+          <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#e14f3a] focus:border-[#e14f3a] focus:z-10 sm:text-sm" placeholder="Password" style="border-color: #e14f3a;">
+        </div>
+      </div>
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-[#e14f3a] hover:bg-[#d6393a] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Sign in
+        </button>
+      </div>
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      {% if message.tags == "success" %}
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% elif message.tags == "error" %}
+            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% else %}
+            <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative" role="alert">
+                <span class="block sm:inline">{{ message }}</span>
+            </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-black">
+        Don't have an account yet?
+        <a href="{% url 'main:register' %}" class="font-medium text-[#e14f3a] opacity-50 hover:opacity-100 hover:text-[#d6393a]">
+          Register Now
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+```  
+
+**REGISTER :**
+```
+{% extends 'base.html' %}
+
+{% block meta %}
+<title>Register</title>
+{% endblock meta %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full space-y-8 form-style">
+    <div>
+      <h2 class="mt-6 text-center text-3xl font-extrabold text-black">
+        Create your account
+      </h2>
+    </div>
+    <form class="mt-8 space-y-6" method="POST">
+      {% csrf_token %}
+      <input type="hidden" name="remember" value="true">
+      <div class="rounded-md shadow-sm -space-y-px">
+        {% for field in form %}
+          <div class="{% if not forloop.first %}mt-4{% endif %}">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-black">
+              {{ field.label }}
+            </label>
+            <div class="relative">
+              {{ field }}
+              <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                {% if field.errors %}
+                  <svg class="h-5 w-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                  </svg>
+                {% endif %}
+              </div>
+            </div>
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+              {% endfor %}
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+
+      <div>
+        <button type="submit" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white" style="background-color: #e14f3a;" onmouseover="this.style.backgroundColor='#d43c30'" onmouseout="this.style.backgroundColor='#e14f3a'">
+          Register
+        </button>        
+      </div>
+      
+    </form>
+
+    {% if messages %}
+    <div class="mt-4">
+      {% for message in messages %}
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span class="block sm:inline">{{ message }}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+      <p class="text-sm text-black">
+        Already have an account?
+        <a href="{% url 'main:login' %}" class="font-medium" style="color: #e14f3a; opacity: 0.75; transition: opacity 0.3s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.75'">
+          Sign-in here
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+```  
+
+**ADD PRODUCT :**
+```
+{% extends 'base.html' %}
+{% load static %}
+{% block meta %}
+<title>Add Product</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="flex flex-col min-h-screen bg-gray-100">
+  <div class="container mx-auto px-4 py-8 mt-16 max-w-xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-black">Add Product</h1>
+  
+    <div class="shadow-md rounded-lg p-6 form-style" style="background-color: #fff5c2;">
+      <form method="POST" class="space-y-6">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="flex flex-col">
+            <label for="{{ field.id_for_label }}" class="mb-2 font-semibold text-gray-700">
+              {{ field.label }}
+            </label>
+            <div class="w-full">
+              {{ field }}
+            </div>
+            {% if field.help_text %}
+              <p class="mt-1 text-sm text-gray-500">{{ field.help_text }}</p>
+            {% endif %}
+            {% for error in field.errors %}
+              <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+        <div class="flex justify-center mt-6">
+          <button type="submit" style="background-color: #e14f3a; color: white;" 
+                  class="font-semibold px-6 py-3 rounded-lg hover:bg-[#d6393a] transition duration-300 ease-in-out w-full"> 
+              Add Product
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+```  
+
+2. Kustomisasi halaman daftar product di halaman utama dengan mengambil template dari card_product :  
+
+**CARD PRODUCT :**
+```
+<div class="flex flex-col items-center">
+    <div class="bg-gradient-to-r from-[#f8ac7d] via-[#f8ac7d] to-[#fce0d1] shadow-lg rounded-xl p-6 hover:shadow-2xl transform hover:scale-105 transition-transform duration-300 mb-6 w-full max-w-sm">
+        <!-- Product Info -->
+        <div class="text-center">
+            <!-- Product Name -->
+            <h3 class="text-xl font-semibold text-gray-800">{{ mood_entry.product_name }}</h3> <!-- Corrected field name -->
+            
+            <!-- Product Description -->
+            <p class="font-medium text-lg mt-2 mb-4 text-gray-700">{{ mood_entry.description }}</p>
+
+            <!-- Price -->
+            <div class="mt-2 mb-4">
+                <span class="px-3 py-1 rounded-full font-semibold" style="background-color: #ee8872; color: #fff;">Price: Rp{{ mood_entry.price }}</span>
+            </div>
+
+            <!-- Rating -->
+            <div class="mt-2 mb-4">
+                <span class="bg-yellow-200 text-yellow-700 px-3 py-1 rounded-full font-semibold">Rating: {{ mood_entry.rating }} ★</span>
+            </div>
+
+            <!-- Add to Cart Button -->
+            <div class="mt-6">
+                <button class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                    Add to Cart
+                </button>
+            </div>
+        </div>
+
+        <!-- Action Buttons (Edit/Delete) -->
+        <div class="mt-6 flex justify-center space-x-4">
+            <a href="{% url 'main:edit_product' mood_entry.pk %}" class="bg-[#ee8872] hover:bg-[#d77666] text-white rounded-full p-2 transition duration-300 shadow-md"> <!-- Updated Edit Icon Color -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828L5.828 17H3v-2.828l10.586-10.586z" />
+                </svg>
+            </a>
+            <a href="{% url 'main:delete_product' mood_entry.pk %}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </div>
+</div>
+```  
+
+**HALAMAN UTAMA :**
+```
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+<title>Welcome to Shapping!</title>
+{% endblock meta %}
+
+{% block content %}
+{% include 'navbar.html' %}
+
+<div class="overflow-x-hidden px-4 md:px-8 pb-8 pt-24 min-h-screen bg-gray-100 flex flex-col">
+    <div class="p-2 mb-6 relative">
+        <div class="relative grid grid-cols-1 z-30 md:grid-cols-3 gap-8">
+            {% include "card_info.html" with title='NPM' value=npm %}
+            {% include "card_info.html" with title='Name' value=name %}
+            {% include "card_info.html" with title='Class' value=kelas %}
+        </div>
+
+        <div class="h-full w-full py-6 absolute top-0 left-0 z-20 md:hidden flex" style="background-color: #e14f3a;">
+            <div class="h-full min-w-4 mx-auto"></div>
+        </div>
+    </div>
+
+    <div class="px-3 mb-4">
+        <div class="flex rounded-md items-center py-2 px-4 w-fit" style="background-color: #e14f3a;">
+            <h1 class="text-white text-center">
+                Last Login: {{ last_login|default:"Not available" }}
+            </h1>
+        </div>
+    </div>
+    
+    <div class="flex justify-end mb-6">
+        <a href="{% url 'main:create_mood_entry' %}" style="background-color: #e14f3a; color: white;" 
+           class="font-bold py-2 px-4 rounded-lg transition duration-300 ease-in-out transform hover:bg-[#d43c30] hover:-translate-y-1 hover:scale-105">
+            Add New Product
+        </a>
+    </div>
+    
+    {% if not mood_entries %}
+        <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+            <img src="{% static 'image/tambah_product.png' %}" alt="Sad face" class="w-32 h-32 mb-4"/>
+            <p class="text-center text-gray-600 mt-4">Belum ada data product dalam shapping ૮(˶ㅠ︿ㅠ)ა</p>
+        </div>
+    {% else %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full"> <!-- Grid layout with max 3 columns -->
+            {% for mood_entry in mood_entries %}
+                {% include 'card_product.html' with mood_entry=mood_entry %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
+```  
+  
+
+* ### Buatlah navigation bar (navbar) untuk fitur-fitur pada aplikasi yang responsive
+**NAVIGATION BAR :**
+```
+<nav class="bg-[#ffec8e] w-full">
+    <div class="flex items-center justify-between h-16 mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 relative">
+        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+            <!-- Mobile menu button-->
+            <button type="button"
+                class="relative inline-flex items-center justify-center rounded-md p-2 text-[#e14f3a] hover:bg-[#ffc566] focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                aria-controls="mobile-menu" aria-expanded="false">
+                <span class="absolute -inset-0.5"></span>
+                <span class="sr-only">Open main menu</span>
+                <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                </svg>
+                <svg class="hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+            <div class="flex flex-shrink-0 items-center">
+                <img class="h-8 w-auto" src="https://media-public.canva.com/UFYNA/MAGMDXUFYNA/1/tl.png"
+                    alt="Your Company">
+            </div>
+            <div class="hidden sm:ml-6 sm:block">
+                <div class="flex space-x-4">
+                    <a href="#"
+                        class="rounded-md bg-[#ffb53d] px-3 py-2 text-sm font-medium text-[#e14f3a] hover:bg-[#ffc566]"
+                        aria-current="page">Home</a>
+                    <a href="#"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-[#e14f3a] hover:bg-[#ffc566]">Cart 🛒</a>
+                    <a href="#"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-[#e14f3a] hover:bg-[#ffc566]">Favorite ♡</a>
+                    <a href="#"
+                        class="rounded-md px-3 py-2 text-sm font-medium text-[#e14f3a] hover:bg-[#ffc566]">Search ⌕</a>
+                </div>
+            </div>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2">
+            <button type="button"
+                class="relative rounded-full bg-[#ffb53d] p-1 text-[#e14f3a] hover:bg-[#ffc566] focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                <span class="absolute -inset-1.5"></span>
+                <span class="sr-only">View notifications</span>
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                    aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                </svg>
+            </button>
+
+            <!-- Profile dropdown -->
+            <div class="relative ml-3">
+                <div>
+                    <button type="button"
+                        class="relative flex rounded-full bg-[#ffb53d] text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                        id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                        <span class="absolute -inset-1.5"></span>
+                        <span class="sr-only">Open user menu</span>
+                        <img class="h-8 w-8 rounded-full"
+                            src="https://i.pinimg.com/564x/70/20/b4/7020b43ceeaba76de1365080e9425124.jpg"
+                            alt="">
+                    </button>
+                </div>
+            
+                <!-- Dropdown hidden by default -->
+                <div class="hidden absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                    role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1"
+                    id="dropdown-menu">
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#ffc566]" role="menuitem"
+                        tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                    <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#ffc566]" role="menuitem"
+                        tabindex="-1" id="user-menu-item-1">Settings</a>
+                    <a href="{% url 'main:logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-[#ffc566]" role="menuitem"
+                        tabindex="-1" id="user-menu-item-2">Sign out</a>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="sm:hidden" id="mobile-menu">
+        <div class="space-y-1 px-2 pb-3 pt-2">
+            <a href="#" class="block rounded-md bg-[#ffb53d] px-3 py-2 text-base font-medium text-[#e14f3a] hover:bg-[#ffc566]"
+                aria-current="page">Home</a>
+            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-[#e14f3a] hover:bg-[#ffc566]">Cart 🛒</a>
+            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-[#e14f3a] hover:bg-[#ffc566]">Favorite ♡</a>
+            <a href="#" class="block rounded-md px-3 py-2 text-base font-medium text-[#e14f3a] hover:bg-[#ffc566]">Search ⌕</a>
+        </div>
+    </div>
+
+    
+</nav>
+
+<script>
+    const userMenuButton = document.getElementById('user-menu-button');
+    const dropdownMenu = document.getElementById('dropdown-menu');
+
+    userMenuButton.addEventListener('click', () => {
+        dropdownMenu.classList.toggle('hidden');
+    });
+</script>
+```
+  
+
+
+## ** Menjawab beberapa pertanyaan berikut pada README.md pada root folder
+1. Menambahkan subjudul untuk setiap pertanyaan yang diberikan dalam checklist.
+2. Menjawab setiap pertanyaan dengan detail berdasarkan pengetahuan yang telah dipelajari dan implementasi yang telah dilakukan.
+3. Melakukan git add, commit, dan push ke github.
+
+
+</details>
