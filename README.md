@@ -1214,3 +1214,293 @@ urlpatterns = [
 
 
 </details>
+
+
+<details>
+<summary> <b> Tugas 6 : JavaScript dan AJAX <b> </summary>
+
+## ** Jelaskan manfaat dari penggunaan JavaScript dalam pengembangan aplikasi web!  
+JavaScript adalah bahasa pemrograman yang sangat penting dalam pengembangan aplikasi web karena dapat meningkatkan dinamika dan interaktivitas halaman web. Beberapa manfaat utamanya antara lain:
+
+1. Interaktivitas Dinamis: JavaScript memungkinkan halaman web untuk bereaksi secara langsung terhadap tindakan pengguna tanpa perlu memuat ulang halaman. Contohnya, perubahan isi halaman atau validasi form dapat terjadi secara real-time.
+2. AJAX: Dengan AJAX (Asynchronous JavaScript and XML), JavaScript memungkinkan pengambilan data dari server tanpa perlu memuat ulang halaman. Ini memberikan pengalaman pengguna yang lebih halus dan efisien, karena bagian halaman yang relevan saja yang diperbarui.
+3. DOM Manipulation: JavaScript mempermudah untuk memodifikasi elemen-elemen di halaman web (Document Object Model) secara dinamis, seperti menambahkan, menghapus, atau mengubah tampilan konten berdasarkan interaksi pengguna.
+4. Penggunaan Umum: JavaScript digunakan di hampir semua aplikasi web modern karena berjalan langsung di browser, sehingga aplikasi dapat berfungsi secara konsisten di berbagai platform. 
+  
+
+
+## ** Jelaskan fungsi dari penggunaan await ketika kita menggunakan fetch()! Apa yang akan terjadi jika kita tidak menggunakan await?  
+await pada JavaScript digunakan untuk menunggu penyelesaian operasi asynchronous sebelum melanjutkan eksekusi kode berikutnya. Fungsi fetch() adalah salah satu contoh fungsi asynchronous yang digunakan untuk mengambil data dari server. Yang akan terjadi jika kita tidak menggunakan await, JavaScript akan menjalankan kode berikutnya meskipun fetch() belum selesai, yang bisa menyebabkan masalah ketika kode berikutnya membutuhkan data dari hasil fetch(). Dengan await, kita memastikan bahwa kode menunggu hingga fetch() selesai dan data yang diperlukan tersedia. Jika kita menggunakan fetch() tanpa await, kita mungkin mencoba mengakses data yang belum diterima dari server, menyebabkan error atau hasil yang tidak diharapkan.  
+  
+
+
+## ** Mengapa kita perlu menggunakan decorator csrf_exempt pada view yang akan digunakan untuk AJAX POST?  
+Django memiliki mekanisme untuk melindungi aplikasi dari serangan Cross-Site Request Forgery (CSRF) dengan memerlukan token CSRF pada setiap request POST. Ketika menggunakan AJAX POST, CSRF token biasanya tidak secara otomatis ditambahkan ke request, yang dapat menyebabkan request tersebut ditolak oleh server Django.  
+  
+
+csrf_exempt digunakan untuk menonaktifkan pengecekan token CSRF pada view tertentu yang digunakan untuk AJAX POST. Ini berguna ketika form yang digunakan oleh AJAX tidak mengirimkan token CSRF, seperti pada form yang tidak dihasilkan langsung dari template Django. 
+
+
+Meskipun csrf_exempt memungkinkan permintaan tanpa CSRF token, penggunaannya harus dibatasi hanya pada situasi di mana perlindungan CSRF tidak dapat dilakukan dengan cara yang lebih aman, seperti menambahkan token CSRF secara manual di request AJAX.
+python.  
+  
+
+
+## ** Pada tutorial PBP minggu ini, pembersihan data input pengguna dilakukan di belakang (backend) juga. Mengapa hal tersebut tidak dilakukan di frontend saja?  
+Pembersihan data input di backend sangat penting untuk keamanan dan integritas data. Meskipun validasi dan pembersihan data dapat dilakukan di frontend, ada beberapa alasan mengapa backend tetap perlu melakukan validasi:
+
+1. Keamanan: Data yang dikirim dari frontend bisa dimodifikasi oleh pengguna jahat. Oleh karena itu, backend harus tetap melakukan pengecekan dan pembersihan data untuk mencegah serangan seperti SQL injection, cross-site scripting (XSS), dan manipulasi data lainnya.
+2. Kontrol Validasi: Pembersihan di backend memastikan bahwa semua data yang masuk ke dalam sistem sudah memenuhi kriteria yang ditetapkan, tanpa bergantung pada validasi frontend yang bisa dihindari.
+3. Konsistensi: Backend bertindak sebagai lapisan akhir untuk memastikan semua data yang masuk sudah sesuai dengan aturan yang ditetapkan, sehingga tidak ada data yang berbahaya atau salah yang tersimpan di basis data.  
+  
+
+
+## ** Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!  
+* ### Mengubah tugas 5 yang telah dibuat sebelumnya menjadi menggunakan AJAX  
+**AJAX GET :**
+1. Membuat Fungsi untuk Menambahkan produk dengan AJAX dengan menambahkan koder berikut di views.py :
+```
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    product_name = strip_tags(request.POST.get("product_name"))
+    price = request.POST.get("price")
+    rating = request.POST.get("rating")
+    description = strip_tags(request.POST.get("description"))
+    user = request.user
+
+    new_product = MoodEntry(
+        product_name=product_name, price=price, description=description,  rating=rating,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
+```  
+
+2. Menambahkan Routing Untuk Fungsi add_product_entry_ajax pada urls.py dengan kode berikut pada urls.py :
+```
+from main.views import ..., add_product_entry_ajax
+
+...
+urlpatterns = [
+    ...
+  path('add-product-entry-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
+]
+```  
+
+3. Menampilkan Data product Entry dengan fetch() API dengan memodifikasi views.py dan main.html :
+views.py :
+```
+def show_xml(request):
+    data = MoodEntry.objects.filter(user=request.user)
+    return ...
+
+def show_json(request):
+    data = MoodEntry.objects.filter(user=request.user)
+    return ...
+```  
+
+main.html :
+```
+<script>
+
+  function addProductEntry() {
+    fetch("{% url 'main:add_product_entry_ajax' %}", {
+        method: "POST",
+        body: new FormData(document.querySelector('#productEntryForm')),
+        headers: {
+            'X-CSRFToken': '{{ csrf_token }}',
+            'Cache-Control': 'no-cache'
+        }
+    })
+
+   .then(response => {
+       if (response.ok) {
+           refreshProductEntries(); // Hanya refresh jika respons sukses
+       } else {
+           console.error('Error adding product');
+       }
+   });
+
+   document.getElementById("productEntryForm").reset(); // Reset form setelah submit
+   hideModal(); // Tutup modal setelah submit
+
+   return false; // Cegah submit form default
+  }
+
+
+    async function getProductEntries(){
+        return fetch("{% url 'main:show_json' %}").then((res) => res.json())
+    }
+
+    async function refreshProductEntries() {
+        document.getElementById("product_entry_cards").innerHTML = "";
+        document.getElementById("product_entry_cards").className = "";
+        const productEntries = await getProductEntries();
+        let htmlString = "";
+        let classNameString = "";
+
+        if (productEntries.length === 0) {
+            classNameString = "flex flex-col items-center justify-center min-h-[24rem] p-6";
+            htmlString = `
+                <div class="flex flex-col items-center justify-center min-h-[24rem] p-6">
+                    <img src="{% static 'image/tambah_product.png' %}" alt="No product" class="w-32 h-32 mb-4"/>
+                    <p class="text-center text-gray-600 mt-4">Belum ada data product dalam shapping ૮(˶ㅠ︿ㅠ)ა</p>
+                </div>
+            `;
+        } else {
+            classNameString = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 space-y-6 w-full";
+            productEntries.forEach((item) => {
+                const product_name = DOMPurify.sanitize(item.fields.product_name);
+                const description = DOMPurify.sanitize(item.fields.description);
+                const price = item.fields.price;
+                const rating = item.fields.rating;
+
+                htmlString += `
+                <div class="flex flex-col items-center">
+                    <div class="bg-gradient-to-r from-[#f8ac7d] via-[#f8ac7d] to-[#fce0d1] shadow-lg rounded-xl p-6 hover:shadow-2xl transform hover:scale-105 transition-transform duration-300 mb-6 w-full max-w-sm">
+                        <!-- Product Info -->
+                        <div class="text-center">
+                            <!-- Product Name -->
+                            <h3 class="text-xl font-semibold text-gray-800">${product_name}</h3>
+                            
+                            <!-- Product Description -->
+                            <p class="font-medium text-lg mt-2 mb-4 text-gray-700">${description}</p>
+
+                            <!-- Price -->
+                            <div class="mt-2 mb-4">
+                                <span class="px-3 py-1 rounded-full font-semibold" style="background-color: #ee8872; color: #fff;">Price: Rp${price}</span>
+                            </div>
+
+                            <!-- Rating -->
+                            <div class="mt-2 mb-4">
+                                <span class="bg-yellow-200 text-yellow-700 px-3 py-1 rounded-full font-semibold">Rating: ${rating} ★</span>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <div class="mt-6">
+                                <button class="bg-red-600 hover:bg-red-700 text-white font-semibold px-4 py-2 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-105">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons (Edit/Delete) -->
+                        <div class="mt-6 flex justify-center space-x-4">
+                            <a href="/edit-product/${item.pk}" class="bg-[#ee8872] hover:bg-[#d77666] text-white rounded-full p-2 transition duration-300 shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828L5.828 17H3v-2.828l10.586-10.586z" />
+                                </svg>
+                            </a>
+                            <a href="/delete/${item.pk}" class="bg-red-500 hover:bg-red-600 text-white rounded-full p-2 transition duration-300 shadow-md" onclick="return confirm('Are you sure you want to delete this item?');">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                `;
+            });
+        }
+
+        document.getElementById("product_entry_cards").className = classNameString;
+        document.getElementById("product_entry_cards").innerHTML = htmlString;
+    }
+
+
+    refreshProductEntries();
+    document.addEventListener("DOMContentLoaded", refreshProductEntries);
+
+    function showModal() {
+        const modal = document.getElementById('productModal');
+        const modalContent = document.getElementById('productModalContent');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modalContent.classList.remove('opacity-0', 'scale-95');
+            modalContent.classList.add('opacity-100', 'scale-100');
+        }, 100);
+    }
+
+    function hideModal() {
+        const modal = document.getElementById('productModal');
+        const modalContent = document.getElementById('productModalContent');
+        modalContent.classList.add('opacity-0', 'scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+</script>
+```  
+
+4. Melindungi Aplikasi dari Cross Site Scripting (XSS) dengan menambahkan strip_tags untuk membersihkan data baru pada views.py dan forms.py.
+views.py :  
+```
+from django.utils.html import strip_tags
+...
+
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    product_name = strip_tags(request.POST.get("product_name"))
+    description = strip_tags(request.POST.get("description"))
+...
+```  
+
+forms.py :
+```
+from django.utils.html import strip_tags
+...
+class ProductEntryForm(forms.ModelForm):
+    class Meta:
+        ...
+    def clean_product_name(self):
+        product_name = self.cleaned_data.get("product_name")
+        # Check if the field is empty
+        if not product_name:
+            raise ValidationError("This field cannot be blank.")
+        # Strip HTML tags for XSS protection
+        return strip_tags(product_name)
+
+    def clean_description(self):
+        description = self.cleaned_data.get("description")
+        # Check if the field is empty
+        if not description:
+            raise ValidationError("This field cannot be blank.")
+        # Strip HTML tags for XSS protection
+        return strip_tags(description)
+
+    def clean_price(self):
+        price = self.cleaned_data.get("price")
+        if price is None:
+            raise ValidationError("This field cannot be blank.")
+        return price
+```  
+  
+5. Melakukan pembersihan data dengan DOMPurify dengan memodifikasi kode pada main.html :  
+```
+...
+    async function refreshProductEntries() {
+        ...
+        productEntries.forEach((item) => {
+                const product_name = DOMPurify.sanitize(item.fields.product_name);
+                const description = DOMPurify.sanitize(item.fields.description);
+                const price = item.fields.price;
+                const rating = item.fields.rating;
+    });
+        ...
+    }
+    ...
+```  
+  
+  
+
+## ** Menjawab beberapa pertanyaan berikut pada README.md pada root folder
+1. Menambahkan subjudul untuk setiap pertanyaan yang diberikan dalam checklist.
+2. Menjawab setiap pertanyaan dengan detail berdasarkan pengetahuan yang telah dipelajari dan implementasi yang telah dilakukan.
+3. Melakukan git add, commit, dan push ke github.
+
+
+</details>
