@@ -20,6 +20,9 @@ from django.utils.html import strip_tags
 from django.shortcuts import render, redirect
 from django.utils import timezone
 from datetime import datetime, timedelta
+import json
+from django.http import JsonResponse
+
 
 @login_required(login_url='/login')
 def show_main(request):
@@ -159,3 +162,22 @@ def add_product_entry_ajax(request):
     new_product.save()
 
     return HttpResponse(b"CREATED", status=201)
+
+@csrf_exempt
+def create_product_flutter(request):
+    if request.method == 'POST':
+
+        data = json.loads(request.body)
+        new_product = MoodEntry.objects.create(
+            user=request.user,
+            product_name=data["product_name"],
+            price=int(data["price"]),
+            rating=int(data["rating"]),
+            description=data["description"],
+        )
+
+        new_product.save()
+
+        return JsonResponse({"status": "success"}, status=200)
+    else:
+        return JsonResponse({"status": "error"}, status=401)

@@ -14,4 +14,11 @@ class MoodEntry(models.Model):
     def is_mood_strong(self):
         return self.rating > 5
     
+# class Project(models.Model):
+#     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable = False)
+#     name = models.CharField(max_length=255)
     
+# class Employee(models.Model):
+#     department = models.CharField(max_length=100)
+#     projects = models.ManyToManyField(Project, relalted_name='employee')
+#     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
